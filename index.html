@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookShelf — Gerenciador de Livros</title>
+</head>
+<body>
+
+  <h1>BookShelf — Gerenciador de Livros</h1>
+  <p>REST API Demo &mdash; <code>http://localhost:8080/api/books</code></p>
+
+  <hr />
+
+  <!-- ─── Formulário ─────────────────────────────────────────────────── -->
+  <section>
+    <h2 id="form-title">Adicionar Livro</h2>
+
+    <form id="book-form">
+      <input type="hidden" id="book-id" />
+
+      <p>
+        <label for="title">Título:</label><br />
+        <input type="text" id="title" placeholder="Ex: Clean Code" size="40" required />
+      </p>
+
+      <p>
+        <label for="author">Autor:</label><br />
+        <input type="text" id="author" placeholder="Ex: Robert C. Martin" size="40" required />
+      </p>
+
+      <p>
+        <label for="year">Ano de Publicação:</label><br />
+        <input type="number" id="year" placeholder="Ex: 2008" min="1000" max="2100" required />
+      </p>
+
+      <p>
+        <button type="submit" id="submit-btn">Adicionar Livro</button>
+        <button type="button" id="cancel-btn" hidden>Cancelar Edição</button>
+      </p>
+    </form>
+  </section>
+
+  <hr />
+
+  <!-- ─── Lista de livros ────────────────────────────────────────────── -->
+  <section>
+    <h2>Acervo de Livros (<span id="book-count">0</span>)</h2>
+    <p id="status-msg">Carregando...</p>
+
+    <table id="book-table" border="1" cellpadding="6">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Autor</th>
+          <th>Ano</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="book-tbody"></tbody>
+    </table>
+  </section>
+
+  <script src="logic.js"></script>
+
+</body>
+</html>
