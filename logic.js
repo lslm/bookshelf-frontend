@@ -14,29 +14,6 @@ const bookCount   = document.getElementById('book-count');
 const bookTbody   = document.getElementById('book-tbody');
 const statusMsg   = document.getElementById('status-msg');
 
-/* ─── Checagem de status HTTP ────────────────────────────────────── */
-function checkStatus(response) {
-  const status = response.status;
-
-  if (status >= 200 && status < 300) {
-    console.log(`[${status}] Requisição bem-sucedida: ${response.url}`);
-    return response; // sucesso — continua o fluxo
-  }
-
-  // Erros do cliente (4xx)
-  if (status === 400) throw new Error(`400 Bad Request — dados inválidos enviados.`);
-  if (status === 401) throw new Error(`401 Unauthorized — autenticação necessária.`);
-  if (status === 403) throw new Error(`403 Forbidden — acesso negado.`);
-  if (status === 404) throw new Error(`404 Not Found — recurso não encontrado.`);
-  if (status === 409) throw new Error(`409 Conflict — conflito com o estado atual.`);
-
-  // Erros do servidor (5xx)
-  if (status >= 500) throw new Error(`${status} Server Error — falha interna no servidor.`);
-
-  // Qualquer outro status fora do intervalo 2xx
-  throw new Error(`HTTP ${status} — resposta inesperada.`);
-}
-
 /* ─── Fetch helper ───────────────────────────────────────────────── */
 async function apiFetch(url, options = {}) {
   const response = await fetch(url, {
@@ -44,12 +21,9 @@ async function apiFetch(url, options = {}) {
     ...options,
   });
 
-  checkStatus(response);
-
   // DELETE retorna texto plano
   const text = await response.text();
-  try { return JSON.parse(text); }
-  catch { return text; }
+  return JSON.parse(text);
 }
 
 /* ─── Renderizar tabela ──────────────────────────────────────────── */
@@ -105,24 +79,12 @@ async function createBook(book) {
 
 /* ─── PUT ────────────────────────────────────────────────────────── */
 async function updateBook(id, book) {
-  const updated = await apiFetch(`${API_URL}/${id}`, {
-    method: 'PUT',
-    body: JSON.stringify(book),
-  });
-  alert(`Livro "${updated.title}" atualizado com sucesso!`);
-  return updated;
+  console.log('Atualizando livro ID', id, 'com dados', book);
 }
 
 /* ─── DELETE ─────────────────────────────────────────────────────── */
 async function deleteBook(id) {
-  if (!confirm('Tem certeza que deseja excluir este livro?')) return;
-  try {
-    const msg = await apiFetch(`${API_URL}/${id}`, { method: 'DELETE' });
-    alert(msg || 'Livro excluído!');
-    loadBooks();
-  } catch (err) {
-    alert('Erro ao excluir: ' + err.message);
-  }
+  console.log('Excluindo livro ID', id);
 }
 
 /* ─── Formulário: submit ─────────────────────────────────────────── */
