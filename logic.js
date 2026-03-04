@@ -23,7 +23,8 @@ async function apiFetch(url, options = {}) {
 
   // DELETE retorna texto plano
   const text = await response.text();
-  return JSON.parse(text);
+  try { return JSON.parse(text); }
+  catch { return {}; }
 }
 
 /* ─── Renderizar tabela ──────────────────────────────────────────── */
@@ -79,12 +80,23 @@ async function createBook(book) {
 
 /* ─── PUT ────────────────────────────────────────────────────────── */
 async function updateBook(id, book) {
-  console.log('Atualizando livro ID', id, 'com dados', book);
+  const updated = await apiFetch(`${API_URL}/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(book),
+  });
+  alert(`Livro "${updated.title}" atualizado com sucesso!`);
+  return updated;
 }
 
 /* ─── DELETE ─────────────────────────────────────────────────────── */
 async function deleteBook(id) {
-  console.log('Excluindo livro ID', id);
+  if (!confirm('Tem certeza que deseja excluir este livro?')) return;
+  try {
+    await apiFetch(`${API_URL}/${id}`, { method: 'DELETE' });
+    loadBooks();
+  } catch (err) {
+    alert('Erro ao excluir: ' + err.message);
+  }
 }
 
 /* ─── Formulário: submit ─────────────────────────────────────────── */
